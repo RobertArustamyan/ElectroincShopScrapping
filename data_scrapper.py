@@ -165,11 +165,13 @@ class RedStoreReq:
                 for item in items:
                     product_data = {}
                     # name
-                    item_name = item.find('a', class_='frame-photo-title').get('title')
+                    item_name = item.find('a', class_='frame-photo-title')
                     if item_name:
-                        product_data['name'] = item_name
+                        product_data['name'] = item_name.get('title')
+                        product_data['link'] = item_name.get('href')
                     else:
                         product_data['name'] = None
+                        product_data['link'] = None
 
                     # price
                     item_price = item.find('span', class_='price priceCashVariant')
@@ -177,7 +179,6 @@ class RedStoreReq:
                         product_data['price'] = item_price.text
                     else:
                         product_data['price'] = None
-
                     products.append(product_data)
             else:
                 print(f"No response from page {i // 12}")
@@ -269,4 +270,9 @@ class RedStoreReq:
         }
 
 smartphone_request = RedStoreReq()
-smartphone_request.getting_all_data()
+result = smartphone_request.getting_all_data()
+
+with open('RedStoreAllData.json', 'w', encoding='utf-8') as json_file:
+    json.dump(result, json_file, ensure_ascii=False, indent=4)
+
+print("Result saved to 'output.json'")
