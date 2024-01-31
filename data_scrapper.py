@@ -360,3 +360,74 @@ class MobileCenterReq:
             "ACCESSORIES-DATA": accessories_data,
             "OTHER-PRODUCTS-DATA": equipment_data,
         }
+
+
+class ThreeDPlanetReq:
+    cookies = {
+        'qtrans_front_language': 'hy',
+        '_gid': 'GA1.2.612525651.1706700913',
+        '_ga_YDGZLGE0D0': 'GS1.1.1706700903.1.1.1706700929.0.0.0',
+        '_ga': 'GA1.1.857811235.1706700904',
+    }
+
+    headers = {
+        'authority': '3dplanet.am',
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+        'cache-control': 'max-age=0',
+        # 'cookie': 'qtrans_front_language=hy; _gid=GA1.2.612525651.1706700913; _ga_YDGZLGE0D0=GS1.1.1706700903.1.1.1706700929.0.0.0; _ga=GA1.1.857811235.1706700904',
+        'referer': 'https://3dplanet.am/',
+        'sec-ch-ua': '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'document',
+        'sec-fetch-mode': 'navigate',
+        'sec-fetch-site': 'same-origin',
+        'sec-fetch-user': '?1',
+        'upgrade-insecure-requests': '1',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+    }
+
+    params = {
+        'per_page': '36',
+    }
+
+    def url_for_page(self, page):
+        return requests.get(f'https://3dplanet.am/shop/page/{page}/', params=self.params, cookies=self.cookies,
+                            headers=self.headers)
+
+    def getting_data_per_page(self, page):
+        response = self.url_for_page(page)
+        if response.status_code == 200:
+            products = []
+            soup = BeautifulSoup(response.text, 'lxml')
+            items = soup.find_all('div', class_='product-information')
+            for item in items:
+                product = {}
+                item_name = item.find('h3', class_='product-title')
+                if item_name:
+                    product['name'] = item_name.text
+                    product['link'] = item_name.a.get('href')
+                else:
+                    product['name'] = None
+                    product['link'] = None
+
+                item_price = item.find('span', class_='woocommerce-Price-amount amount')
+                if item_price:
+                    price_parts = item_price.text.replace('\xa0', '').split('\\')
+                    numeric_price = (price_parts[0][:-3])
+                    numeric_price = numeric_price.replace(',', '.')
+                    product['price'] = numeric_price
+                else:
+                    product['price'] = None
+                products.append(product)
+            return products
+        else:
+            return None
+
+    def getting_all_data(self):
+        all_product = []
+        for i in range(1, 31):
+            print(f"ON PAGE {i}")
+            all_product.extend(self.getting_data_per_page(i))
+        return all_product
