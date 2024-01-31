@@ -153,7 +153,7 @@ class RedStoreReq:
         self.params['per_page'] = str(page)
         return requests.get(self.requests_url, params=self.params, cookies=self.cookies, headers=self.headers)
 
-    def getting_data(self,page_count,IT_name):
+    def getting_data(self, page_count, IT_name):
         products = []
         for i in range(0, page_count + 1, 12):
             print(f"{IT_name} PAGE {i // 12}")
@@ -187,13 +187,13 @@ class RedStoreReq:
 
     def getting_all_data(self):
         self.url_for_category('smartfony')
-        phone_data = self.getting_data(552,'smartfony')
+        phone_data = self.getting_data(552, 'smartfony')
 
         self.url_for_category('tablets')
-        tablet_data = self.getting_data(120,'tablets')
+        tablet_data = self.getting_data(120, 'tablets')
 
         self.url_for_category('watches')
-        watch_data = self.getting_data(72,'watches')
+        watch_data = self.getting_data(72, 'watches')
 
         self.url_for_category('notebooks')
         notebook_data = self.getting_data(240, 'notebooks')
@@ -205,46 +205,46 @@ class RedStoreReq:
         monitor_data = self.getting_data(48, 'monitors')
 
         self.url_for_category('tv')
-        tv_data = self.getting_data(72,'tv')
+        tv_data = self.getting_data(72, 'tv')
 
         self.url_for_category('printery')
-        printer_data = self.getting_data(36,'printery')
+        printer_data = self.getting_data(36, 'printery')
 
         self.url_for_category('Speakers')
-        speakers_data = self.getting_data(168,'Speakers')
+        speakers_data = self.getting_data(168, 'Speakers')
 
         self.url_for_category('proektory')
-        proektory_data = self.getting_data(36,'proektory')
+        proektory_data = self.getting_data(36, 'proektory')
 
         self.url_for_category('zerkalnye-fotoapparaty')
-        fotoapparaty_data = self.getting_data(60,'zerkalnye-fotoapparaty')
+        fotoapparaty_data = self.getting_data(60, 'zerkalnye-fotoapparaty')
 
         self.url_for_category('igrovye-konsoli')
-        konsoli_data = self.getting_data(72,'igrovye-konsoli')
+        konsoli_data = self.getting_data(72, 'igrovye-konsoli')
 
         self.url_for_category('sdg')
-        sdg_data = self.getting_data(0,'sdg')
+        sdg_data = self.getting_data(0, 'sdg')
 
         self.url_for_category('54')
-        router_data = self.getting_data(24,'54')
+        router_data = self.getting_data(24, '54')
 
         self.url_for_category('dronys')
-        dron_data = self.getting_data(0,'dronys')
+        dron_data = self.getting_data(0, 'dronys')
 
         self.url_for_category('l')
-        vintilyator_data = self.getting_data(60,'l')
+        vintilyator_data = self.getting_data(60, 'l')
 
         self.url_for_category('Appliances')
-        appliances_data = self.getting_data(324,'Appliances')
+        appliances_data = self.getting_data(324, 'Appliances')
 
         self.url_for_category('f')
-        xnamqi_data = self.getting_data(84,'f')
+        xnamqi_data = self.getting_data(84, 'f')
 
         self.url_for_category('accessories')
-        accessories_data = self.getting_data(1644,'accessories')
+        accessories_data = self.getting_data(1644, 'accessories')
 
         self.url_for_category('other-products')
-        other_products_data = self.getting_data(96,'other-products')
+        other_products_data = self.getting_data(96, 'other-products')
 
         return {
             "PHONE-DATA": phone_data,
@@ -269,10 +269,77 @@ class RedStoreReq:
             "OTHER-PRODUCTS-DATA": other_products_data,
         }
 
-smartphone_request = RedStoreReq()
-result = smartphone_request.getting_all_data()
 
-with open('RedStoreAllData.json', 'w', encoding='utf-8') as json_file:
-    json.dump(result, json_file, ensure_ascii=False, indent=4)
+class MobileCenterReq:
+    cookies = {
+        'PHPSESSID': 'ge1gtdfcpesc97qbki08san446',
+        '_gid': 'GA1.2.304375013.1706698525',
+        'twk_idm_key': 'gqMOe4Gd7hj4mFQQz1e6a',
+        '_ga_H6H0DTRSD9': 'GS1.1.1706698524.1.1.1706698627.0.0.0',
+        '_ga': 'GA1.2.2012551776.1706698525',
+        'TawkConnectionTime': '0',
+        'twk_uuid_5f16133c7258dc118bee9cff': '%7B%22uuid%22%3A%221.WrubhMozqHDTp4cHWiFnCkmLU7uzcOQDEoeNFtEk8gEpJgyxNudlZnHZqqdGsbIKhlzL8mdyVx3s6WtyHuRqWi5ph1GiM2WN0V2pEo4Dl0K6XWzEbQQfPx05M%22%2C%22version%22%3A3%2C%22domain%22%3A%22mobilecentre.am%22%2C%22ts%22%3A1706698628408%7D',
+    }
 
-print("Result saved to 'output.json'")
+    headers = {
+        'authority': 'www.mobilecentre.am',
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+        'cache-control': 'max-age=0',
+        # 'cookie': 'PHPSESSID=ge1gtdfcpesc97qbki08san446; _gid=GA1.2.304375013.1706698525; twk_idm_key=gqMOe4Gd7hj4mFQQz1e6a; _ga_H6H0DTRSD9=GS1.1.1706698524.1.1.1706698627.0.0.0; _ga=GA1.2.2012551776.1706698525; TawkConnectionTime=0; twk_uuid_5f16133c7258dc118bee9cff=%7B%22uuid%22%3A%221.WrubhMozqHDTp4cHWiFnCkmLU7uzcOQDEoeNFtEk8gEpJgyxNudlZnHZqqdGsbIKhlzL8mdyVx3s6WtyHuRqWi5ph1GiM2WN0V2pEo4Dl0K6XWzEbQQfPx05M%22%2C%22version%22%3A3%2C%22domain%22%3A%22mobilecentre.am%22%2C%22ts%22%3A1706698628408%7D',
+        'referer': 'https://www.mobilecentre.am/',
+        'sec-ch-ua': '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'document',
+        'sec-fetch-mode': 'navigate',
+        'sec-fetch-site': 'same-origin',
+        'sec-fetch-user': '?1',
+        'upgrade-insecure-requests': '1',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+    }
+
+    def url_for_category(self, category):
+        return f'https://www.mobilecentre.am/category/{category}'
+
+    def getting_data(self, category):
+        url = self.url_for_category(category)
+        response = requests.get(url, cookies=self.cookies, headers=self.headers)
+        if response.status_code == 200:
+            products = []
+            soup = BeautifulSoup(response.text,'lxml')
+            items = soup.find_all('div', class_='listitem')
+            for item in items:
+                product = {}
+
+                item_name = item.find('h3')
+                if item_name:
+                    product['name'] = item_name.text
+                else:
+                    product['name'] = None
+
+                item_link = item.find('a',class_='prod-item-img')
+                if item_link:
+                    product['link'] = item_link.get('href')
+                else:
+                    product['link'] = None
+
+                item_price = item.find('span',class_='regular')
+                if item_price:
+                    product['price'] = item_price.text
+                else:
+                    product['price'] = None
+
+                products.append(product)
+
+            return products
+
+        else:
+            print(f"No response from url-{url}")
+            return None
+
+
+
+
+MobileData = MobileCenterReq()
+MobileData.getting_data('phones/138/0/')
