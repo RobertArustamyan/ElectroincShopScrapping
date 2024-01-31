@@ -307,7 +307,7 @@ class MobileCenterReq:
         response = requests.get(url, cookies=self.cookies, headers=self.headers)
         if response.status_code == 200:
             products = []
-            soup = BeautifulSoup(response.text,'lxml')
+            soup = BeautifulSoup(response.text, 'lxml')
             items = soup.find_all('div', class_='listitem')
             for item in items:
                 product = {}
@@ -318,13 +318,13 @@ class MobileCenterReq:
                 else:
                     product['name'] = None
 
-                item_link = item.find('a',class_='prod-item-img')
+                item_link = item.find('a', class_='prod-item-img')
                 if item_link:
                     product['link'] = item_link.get('href')
                 else:
                     product['link'] = None
 
-                item_price = item.find('span',class_='regular')
+                item_price = item.find('span', class_='regular')
                 if item_price:
                     product['price'] = item_price.text
                 else:
@@ -338,8 +338,25 @@ class MobileCenterReq:
             print(f"No response from url-{url}")
             return None
 
+    def getting_all_data(self):
+        phone_data = self.getting_data('phones/138/0/')
+        tablet_data = self.getting_data('tablets/139/0/')
+        watch_data = self.getting_data('watches/141/0/')
+        tv_data = self.getting_data('tvs/143/0/')
+        computer_data = self.getting_data('computers/144/0/')
+        accessories_data = self.getting_data('accessories/146/0/')
+        appliance_data = self.getting_data('household-appliances/178/0/')
+        equipment_data = self.getting_data('equipments/148/0/')
+        photo_camera_data = self.getting_data('photo-cameras/140/0/')
 
-
-
-MobileData = MobileCenterReq()
-MobileData.getting_data('phones/138/0/')
+        return {
+            "PHONE-DATA": phone_data,
+            "TABLET-DATA": tablet_data,
+            "WATCH-DATA": watch_data,
+            "COMPUTER-DATA": computer_data,
+            "TV-DATA": tv_data,
+            "FOTOAPPARATY-DATA": photo_camera_data,
+            "APPLIANCES-DATA": appliance_data,
+            "ACCESSORIES-DATA": accessories_data,
+            "OTHER-PRODUCTS-DATA": equipment_data,
+        }
