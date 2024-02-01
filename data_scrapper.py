@@ -49,68 +49,66 @@ class ZigZagReq:
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     }
     params = {
-        'product_list_mode': 'list',
+        'product_list_mode': 'list'
     }
-    base_url = 'https://www.zigzag.am/am/phones-and-communication.html'
 
-    # Making request for phone,accsesories, and naushniks
-    def making_request_pan(self, page):
+    def making_resopnse(self, page, url):
         self.params['p'] = str(page)
-        return requests.get(self.base_url, params=self.params, cookies=self.cookies, headers=self.headers)
+        return requests.get(url, params=self.params, cookies=self.cookies, headers=self.headers)
 
-    # Getting phones accesories and naushniks
-    def getting_p_a_n(self):
+    def getting_data(self, page, category):
+        url = f'https://www.zigzag.am/am/{category}'
         products = []
-        for i in range(1, 99):
-            # Getting response
-            print(i)
-            response = self.making_request_pan(i)
+        for i in range(1, page + 1):
+            response = self.making_resopnse(i, url)
             if response.status_code == 200:
+                print(f"{url} - {i}")
+
                 soup = BeautifulSoup(response.text, 'lxml')
+                items = soup.find_all('div', class_='block_inner product-item-details')
+                for item in items:
+                    product = {}
 
-                # All info blocks
-                info_blocks = soup.find_all('div', class_='block_inner product-item-details')
-                for block in info_blocks:
-                    product_data = {}
-                    # Product Category
-                    product_category = block.find('div', class_='product_category')
-                    if product_category:
-                        product_data['category'] = product_category.text
+                    item_category = item.find('div', class_='product_category')
+                    if item_category:
+                        product['item_category'] = item_category.text
                     else:
-                        product_category['category'] = None
-                    # Product Name and Url
-                    product_name = block.find('a', class_='product_name combo_link')
-                    if product_name:
-                        product_data['name'] = product_name.text
-                        product_data['url'] = product_name.get('href')
-                    else:
-                        product_data['name'] = None
-                        product_data['url'] = None
-                    # Products Details list
-                    details_list = []
-                    detail_list = block.find('ul', class_='details_list')
-                    if detail_list:
-                        for li in detail_list.find_all('li'):
-                            details_list.append(li.text.strip())
-                        product_data['details'] = details_list
-                    else:
-                        product_data['details'] = None
-                    # Products Price
-                    price = block.find('span', class_='price')
-                    if price:
-                        product_data['price'] = price.text
-                    else:
-                        product_data['price'] = None
+                        product['item_category'] = None
 
-                    products.append(product_data)
+                    item_link_name = item.find('a', class_='product_name combo_link')
+                    if item_link_name:
+                        product['name'] = item_link_name.text.split('\n')[1]
+                        product['link'] = item_link_name.get('href')
+                    else:
+                        product['name'] = None
+                        product['link'] = None
 
-            else:
-                print(f"No response from page {i}")
-                products.append({f"page{i}"})
-        # Writing Data in json file
-        with open('zigzag_data.json', 'w', encoding='utf-8') as json_file:
-            json.dump(products, json_file, ensure_ascii=False, indent=2)
+                    item_price = item.find('span', class_='price')
+                    if item_price:
+                        product['price'] = item_price.text.split(' ')[0].replace(',', '.')
+                    else:
+                        product['price'] = None
 
+                    products.append(product)
+
+        return products
+
+    def getting_all_data(self):
+        tv_audio_video = self.getting_data(56, 'tv-audio-video.html')
+        computers_notebooks_tablets = self.getting_data(85, 'computers-notebooks-tablets.html')
+        phones_comunication = self.getting_data(81, 'phones-and-communication.html')
+        household_appliances = self.getting_data(44, 'household-appliances.html')
+        kitchen_appliances = self.getting_data(63, 'kitchen-appliances.html')
+        air_conditioning_equipment = self.getting_data(21 ,'air-conditioning-equipment.html')
+
+        return {
+            "TV_AUDIO_VIDEO" : tv_audio_video,
+            "COMPUTERS_NOTEBOOKS_TABLETS" : computers_notebooks_tablets,
+            "PHONES_COMUNICATION" : phones_comunication,
+            "HOUSEHOLD_APPLIANCES" : household_appliances,
+            "KITCHEN_APPLIANCES" : kitchen_appliances,
+            "AIR_CONDITIONING_EQUIPMENT" : air_conditioning_equipment
+        }
 
 class RedStoreReq:
     cookies = {
