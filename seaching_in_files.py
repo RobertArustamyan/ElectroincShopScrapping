@@ -1,10 +1,11 @@
 import json
 import asyncio
 
+
 async def async_load_and_return_data(file_name: str, category: str = None):
     category_for_file = search_dict_values(file_name, category)
 
-    with open(file_name, 'r',encoding='utf-8') as file:
+    with open(file_name, 'r', encoding='utf-8') as file:
         all_data = json.load(file)
     if category:
         data = []
@@ -14,6 +15,8 @@ async def async_load_and_return_data(file_name: str, category: str = None):
         return data
     else:
         return all_data
+
+
 def search_dict_values(file_name: str, category: str = None):
     if file_name == 'MobileCenterAllData.json':
         cat_dict = {
@@ -60,7 +63,24 @@ async def async_load_all_data(category):
 
     return await asyncio.gather(*tasks)
 
+async def find_item(data, item_name):
+    res = []
+    for item in data:
+        if item_name.lower() in item['name'].replace(" ", "").lower():
+            res.append(item)
+    return res
+
+async def getting_result(category,item_name):
+    all_data = await async_load_all_data(category)
+    res = []
+    for data in all_data:
+        res.extend(await find_item(data, item_name))
+    return res
+
+
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    result = loop.run_until_complete(async_load_all_data('phone'))
-    print(result)
+    try:
+        result = asyncio.run(getting_result('phone', 'iphone13mini'))
+        print(result)
+    except Exception as e:
+        print(f"An error occurred: {e}")
