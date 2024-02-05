@@ -18,7 +18,7 @@ async def async_load_and_return_data(file_name: str, category: str = None):
 
 
 def search_dict_values(file_name: str, category: str = None):
-    if file_name == 'MobileCenterAllData.json':
+    if file_name == 'Data/MobileCenterAllData.json':
         cat_dict = {
             'phone': ["PHONE-DATA"],
             'tablet': ["TABLET-DATA"],
@@ -27,7 +27,7 @@ def search_dict_values(file_name: str, category: str = None):
             'other': ["WATCH-DATA", "FOTOAPPARATY-DATA", "APPLIANCES-DATA", "OTHER-PRODUCTS-DATA", "ACCESSORIES-DATA"],
         }
         return cat_dict[category]
-    elif file_name == 'ZigZagAllData.json':
+    elif file_name == 'Data/ZigZagAllData.json':
         cat_dict = {
             'phone': ["PHONES_COMUNICATION"],
             'tablet': ["COMPUTERS_NOTEBOOKS_TABLETS"],
@@ -37,7 +37,7 @@ def search_dict_values(file_name: str, category: str = None):
                       "COMPUTERS_NOTEBOOKS_TABLETS", "TV_AUDIO_VIDEO"],
         }
         return cat_dict[category]
-    elif file_name == 'RedStoreAllData.json':
+    elif file_name == 'Data/RedStoreAllData.json':
         cat_dict = {
             'phone': ["PHONE-DATA"],
             'tablet': ["TABLET-DATA"],
@@ -55,10 +55,10 @@ def search_dict_values(file_name: str, category: str = None):
 
 async def async_load_all_data(category):
     tasks = [
-        async_load_and_return_data('MobileCenterAllData.json', category=category),
-        async_load_and_return_data('3DPlanet.json'),
-        async_load_and_return_data('RedStoreAllData.json', category=category),
-        async_load_and_return_data('ZigZagAllData.json', category=category)
+        async_load_and_return_data('Data/MobileCenterAllData.json', category=category),
+        async_load_and_return_data('Data/3DPlanet.json'),
+        async_load_and_return_data('Data/RedStoreAllData.json', category=category),
+        async_load_and_return_data('Data/ZigZagAllData.json', category=category)
     ]
 
     return await asyncio.gather(*tasks)
@@ -80,7 +80,7 @@ async def getting_result(category,item_name):
 
 if __name__ == "__main__":
     try:
-        result = asyncio.run(getting_result('phone', 'iphone13mini'))
+        result = asyncio.run(getting_result('phone', 'iphone14'))
         print(result)
     except Exception as e:
         print(f"An error occurred: {e}")
