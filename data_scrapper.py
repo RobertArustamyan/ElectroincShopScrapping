@@ -324,7 +324,7 @@ class MobileCenterReq:
 
                 item_price = item.find('span', class_='regular')
                 if item_price:
-                    product['price'] = item_price.text
+                    product['price'] = item_price.text.split('դր')[0].replace(',','.')
                 else:
                     product['price'] = None
 
@@ -358,7 +358,6 @@ class MobileCenterReq:
             "ACCESSORIES-DATA": accessories_data,
             "OTHER-PRODUCTS-DATA": equipment_data,
         }
-
 
 class ThreeDPlanetReq:
     cookies = {
