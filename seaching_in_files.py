@@ -63,6 +63,7 @@ async def async_load_all_data(category):
 
     return await asyncio.gather(*tasks)
 
+
 async def find_item(data, item_name):
     res = []
     for item in data:
@@ -70,7 +71,8 @@ async def find_item(data, item_name):
             res.append(item)
     return res
 
-async def getting_result(category,item_name):
+
+async def getting_result(category, item_name):
     all_data = await async_load_all_data(category)
     res = []
     for data in all_data:
@@ -78,9 +80,18 @@ async def getting_result(category,item_name):
     return res
 
 
+async def sorting_result(category, item_name, min_value=0, max_value=float('inf')):
+    result = await getting_result(category, item_name)
+    return_result = []
+    for item in result:
+        if item['price'] and float(item['price'].replace('.','')) < max_value and float(item['price'].replace('.','')) > min_value:
+            return_result.append(item)
+
+    return return_result
+
 if __name__ == "__main__":
     try:
-        result = asyncio.run(getting_result('phone', 'iphone14'))
-        print(result)
+        res = asyncio.run(sorting_result('phone', 'iphone',300000,400000))
+        print(res)
     except Exception as e:
         print(f"An error occurred: {e}")
