@@ -1,10 +1,11 @@
 import os
 import json
 from firebase_admin import credentials, db, initialize_app
+from dotenv import load_dotenv
 
 cred = credentials.Certificate("electro-shops-arm-firebase-adminsdk-fznxq-e286074b55.json")
 initialize_app(cred, {
-    'databaseURL': 'https://electro-shops-arm-default-rtdb.europe-west1.firebasedatabase.app/'
+    'databaseURL': os.environ.get('DataServerLink')
 })
 
 def push_data_from_json(json_file_path, key):

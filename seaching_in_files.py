@@ -1,10 +1,14 @@
 import json
 import asyncio
 from firebase_admin import credentials, db, initialize_app
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 cred = credentials.Certificate("electro-shops-arm-firebase-adminsdk-fznxq-e286074b55.json")
 initialize_app(cred, {
-    'databaseURL': 'https://electro-shops-arm-default-rtdb.europe-west1.firebasedatabase.app/'
+    'databaseURL': os.environ.get('DataServerLink')
 })
 
 async def async_load_and_return_data(file_name: str, category: str = None):
