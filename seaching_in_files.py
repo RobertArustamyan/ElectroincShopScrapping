@@ -1,12 +1,17 @@
 import json
 import asyncio
+from firebase_admin import credentials, db, initialize_app
 
+cred = credentials.Certificate("electro-shops-arm-firebase-adminsdk-fznxq-e286074b55.json")
+initialize_app(cred, {
+    'databaseURL': 'https://electro-shops-arm-default-rtdb.europe-west1.firebasedatabase.app/'
+})
 
 async def async_load_and_return_data(file_name: str, category: str = None):
     category_for_file = search_dict_values(file_name, category)
 
-    with open(file_name, 'r', encoding='utf-8') as file:
-        all_data = json.load(file)
+    ref = db.reference(file_name)
+    all_data = ref.get()
     if category:
         data = []
         for cat in category_for_file:
@@ -18,7 +23,7 @@ async def async_load_and_return_data(file_name: str, category: str = None):
 
 
 def search_dict_values(file_name: str, category: str = None):
-    if file_name == 'Data/MobileCenterAllData.json':
+    if file_name == '/mobile_center_data':
         cat_dict = {
             'phone': ["PHONE-DATA"],
             'tablet': ["TABLET-DATA"],
@@ -27,7 +32,7 @@ def search_dict_values(file_name: str, category: str = None):
             'other': ["WATCH-DATA", "FOTOAPPARATY-DATA", "APPLIANCES-DATA", "OTHER-PRODUCTS-DATA", "ACCESSORIES-DATA"],
         }
         return cat_dict[category]
-    elif file_name == 'Data/ZigZagAllData.json':
+    elif file_name == '/zig_zag_data':
         cat_dict = {
             'phone': ["PHONES_COMUNICATION"],
             'tablet': ["COMPUTERS_NOTEBOOKS_TABLETS"],
@@ -37,7 +42,7 @@ def search_dict_values(file_name: str, category: str = None):
                       "COMPUTERS_NOTEBOOKS_TABLETS", "TV_AUDIO_VIDEO"],
         }
         return cat_dict[category]
-    elif file_name == 'Data/RedStoreAllData.json':
+    elif file_name == '/red_store_data':
         cat_dict = {
             'phone': ["PHONE-DATA"],
             'tablet': ["TABLET-DATA"],
@@ -55,10 +60,10 @@ def search_dict_values(file_name: str, category: str = None):
 
 async def async_load_all_data(category):
     tasks = [
-        async_load_and_return_data('Data/MobileCenterAllData.json', category=category),
-        async_load_and_return_data('Data/3DPlanet.json'),
-        async_load_and_return_data('Data/RedStoreAllData.json', category=category),
-        async_load_and_return_data('Data/ZigZagAllData.json', category=category)
+        async_load_and_return_data('/mobile_center_data', category=category),
+        async_load_and_return_data('/3d_planet_data'),
+        async_load_and_return_data('/red_store_data', category=category),
+        async_load_and_return_data('/zig_zag_data', category=category)
     ]
 
     return await asyncio.gather(*tasks)
@@ -91,7 +96,7 @@ async def sorting_result(category, item_name, min_value=0, max_value=float('inf'
 
 if __name__ == "__main__":
     try:
-        res = asyncio.run(sorting_result('phone', 'iphone',300000,400000))
+        res = asyncio.run(sorting_result('phone', 'iphone14',0,15000))
         print(res)
     except Exception as e:
         print(f"An error occurred: {e}")
