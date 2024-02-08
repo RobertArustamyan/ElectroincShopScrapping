@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import os
 from firebase_admin import credentials, db, initialize_app
 from dotenv import load_dotenv
+
 class ZigZagReq:
     cookies = {
         'section_data_ids': '%7B%7D',
@@ -448,7 +449,7 @@ if __name__ == "__main__":
     threedplanet_data = threedplanet.getting_all_data()
 
     load_dotenv()
-    cred = credentials.Certificate("electro-shops-arm-firebase-adminsdk-fznxq-e286074b55.json")
+    cred = credentials.Certificate(os.environ.get('Certificate'))
     initialize_app(cred, {
         'databaseURL': os.environ.get('DataServerLink')
     })
