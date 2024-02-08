@@ -2,6 +2,7 @@ import os
 import json
 from firebase_admin import credentials, db, initialize_app
 from dotenv import load_dotenv
+load_dotenv()
 
 cred = credentials.Certificate("electro-shops-arm-firebase-adminsdk-fznxq-e286074b55.json")
 initialize_app(cred, {

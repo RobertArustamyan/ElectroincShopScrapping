@@ -1,8 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-import json
-
-
+import os
+from firebase_admin import credentials, db, initialize_app
+from dotenv import load_dotenv
 class ZigZagReq:
     cookies = {
         'section_data_ids': '%7B%7D',
@@ -428,3 +428,33 @@ class ThreeDPlanetReq:
             print(f"ON PAGE {i}")
             all_product.extend(self.getting_data_per_page(i))
         return all_product
+
+
+def update_data(data, key):
+    ref = db.reference('/')
+    ref.child(key).update(data)
+
+if __name__ == "__main__":
+    zigzag = ZigZagReq()
+    zigzag_data = zigzag.getting_all_data()
+
+    redstore = RedStoreReq()
+    redstore_data = redstore.getting_all_data()
+
+    mobilecenter = MobileCenterReq()
+    mobilecenter_data = mobilecenter.getting_all_data()
+
+    threedplanet = ThreeDPlanetReq()
+    threedplanet_data = threedplanet.getting_all_data()
+
+    load_dotenv()
+    cred = credentials.Certificate("electro-shops-arm-firebase-adminsdk-fznxq-e286074b55.json")
+    initialize_app(cred, {
+        'databaseURL': os.environ.get('DataServerLink')
+    })
+
+
+    update_data(zigzag_data, "zig_zag_data")
+    update_data(redstore_data, "red_store_data")
+    update_data(mobilecenter_data, "mobile_center_data")
+    update_data(threedplanet_data, "3d_planet_data")
